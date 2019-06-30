@@ -1,0 +1,40 @@
+version: '3.6'
+services:
+  app:
+    build:
+      context: .
+    container_name: laravel-swoole
+    ports:
+      - 80:8080
+    environment:
+      - SKIP_LOCKDOWN_DOCUMENT_ROOT=true
+      - OPCACHE_SAVE_COMMENTS=1
+      - OPCACHE_VALIDATE_TIMESTAMPS=1
+    volumes:
+      - .:/var/www/laravel-swoole
+    links:
+      - pgsql
+      - redis
+
+  pgsql:
+    image: "postgres:latest"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: laravel_s
+      POSTGRES_PASSWORD: 1
+    volumes:
+      - default-pgsql:/var/lib/postgresql/data
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+    volumes:
+      - default-redis:/data
+volumes:
+  default-pgsql:
+    driver: local
+  default-redis:
+    driver: local
+
